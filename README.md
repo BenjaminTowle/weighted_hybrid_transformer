@@ -10,7 +10,7 @@ An encoder-decoder transformer model which trains on the Open Subtitles dataset.
 The files can be operated through the Trainer class.  Specific details about the model hyper-parameters can be changed when the Trainer class is instantiated.  See below:
 
 ```python
-trainer = Trainer(config={"num_layers": 3})
+trainer = Trainer("baseline", config={"num_layers": 3})
 trainer.train()
 # Some training happens ...
 # ...
