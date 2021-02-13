@@ -145,17 +145,17 @@ class Trainer:
         """
         # Check if retrieval candidates exist
         if self.config.multitask:
-            if not (os.path.isfile("response_vectors") and os.path.isfile("response_texts")):
+            if not (os.path.isfile("Save/response_vectors") and os.path.isfile("Save/response_texts")):
                 self.store_retrieval_candidates()
 
         # Check if model predictions exist
-        if not os.path.isfile(f"{self.config.model_name}"):
+        if not os.path.isfile(f"Save/{self.config.model_name}_test"):
             contexts, responses = self.dataloader.get_test_data()
             self.transformer.test(contexts, responses)
 
         if metrics is None:
             metrics = ["bleu", "rouge", "distinct1", "distinct2"]
-        _, responses, predictions = pickle.load(open(f"{self.config.model_name}", "rb"))
+        _, responses, predictions = pickle.load(open(f"Save/{self.config.model_name}_test", "rb"))
 
         # Truncate responses to MAX_LENGTH tokens as this is what model made predictions against
         responses = self.tokenizer.encode_ids(responses)
