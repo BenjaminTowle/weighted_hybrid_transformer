@@ -82,6 +82,10 @@ class Transformer(tf.keras.Model):
 
         return losses
 
+    def load_weights(self, folder):
+        self.encoder.load_weights(f"{folder}/{self.config.model_name}_encoder.h5")
+        self.decoder.load_weights(f"{folder}/{self.config.model_name}_decoder.h5")
+
     def predict(self, test_source_text=None, top_k=None, return_probabilities=False):
         """
         Used at inference, to take an input sentence and produce a response.
@@ -163,8 +167,8 @@ class Transformer(tf.keras.Model):
         if self.config.multitask:
             # Load retrieval candidates
             try:
-                retrieval_vectors = pickle.load(open("response_vectors", "rb"))
-                retrieval_texts = pickle.load(open("response_texts", "rb"))
+                retrieval_vectors = pickle.load(open("Save/response_vectors", "rb"))
+                retrieval_texts = pickle.load(open("Save/response_texts", "rb"))
             except FileNotFoundError as e:
                 print(e)
                 print("Must initialise retrieval candidates first")
@@ -227,7 +231,7 @@ class Transformer(tf.keras.Model):
             print(pred)
             print("====================")
 
-        pickle.dump((contexts, responses, predictions), open("transformer_test", "wb"))
+        pickle.dump((contexts, responses, predictions), open(f"Save/{self.config.model_name}_test", "wb"))
         print(generative_usage)
 
     def validation_loss(self, inputs):
