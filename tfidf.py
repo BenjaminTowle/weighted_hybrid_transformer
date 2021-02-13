@@ -27,4 +27,4 @@ class Tfidf:
             argsort = cosine_similarities.argsort()
             predictions.append(responses[argsort[-1]])
 
-        pickle.dump((t_contexts, t_responses, predictions), open("tfidf", "wb"))
+        pickle.dump((t_contexts, t_responses, predictions), open("Save/tfidf_test", "wb"))
