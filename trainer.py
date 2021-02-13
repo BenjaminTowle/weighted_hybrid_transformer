@@ -76,7 +76,7 @@ class Trainer:
             # Reduce learning rate every DECAY_FREQ steps
             if (batch + 1) % self.config.decay_freq == 0:
                 self.config.learning_rate *= self.config.decay_rate
-                self.transformer.opt.__setattr__("learning_rate", self.config.learning_rate)
+                self.transformer.optimizer.__setattr__("learning_rate", self.config.learning_rate)
 
             if (batch + 1) % self.config.display_loss_freq == 0:
                 print("Step: ", batch + 1)
