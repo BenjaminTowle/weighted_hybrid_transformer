@@ -81,7 +81,8 @@ class Trainer:
             if (batch + 1) % self.config.display_loss_freq == 0:
                 print("Step: ", batch + 1)
                 for key, value in trailing_losses.items():
-                    print(f"{key} loss: {np.round(value, 3)}")
+                    if value is not None:
+                        print(f"{key} loss: {np.round(value, 3)}")
 
                 print(self.transformer.predict())
                 self.transformer.save_weights(f"{self.config.model_name}.h5")
