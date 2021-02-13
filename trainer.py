@@ -39,6 +39,9 @@ class Trainer:
         """
         if model_name not in ModelNotFoundError.model_names:
             raise ModelNotFoundError()
+        
+        if not os.path.isdir("Save"):
+            os.mkdir("Save")
 
         self.config = Config(model_name)
         self.tokenizer = self.config.tokenizer
@@ -85,7 +88,8 @@ class Trainer:
                         print(f"{key} loss: {np.round(value, 3)}")
 
                 print(self.transformer.predict())
-                self.transformer.save_weights(f"{self.config.model_name}.h5")
+                self.transformer.encoder.save_weights(f"Save/{self.config.model_name}_encoder.h5")
+                self.transformer.decoder.save_weights(f"Save/{self.config.model_name}_decoder.h5")
 
             if batch % self.config.validation_freq == 0:
                 losses = self.transformer.validation_loss(validation_data)
@@ -95,7 +99,7 @@ class Trainer:
                 validation_losses.append(list(losses.values()))
 
             if (batch + 1) == self.config.num_steps:
-                pickle.dump(validation_losses, open(f"{self.config.model_name}_losses", "wb"))
+                pickle.dump(validation_losses, open(f"Save/{self.config.model_name}_losses", "wb"))
                 break
 
     def store_retrieval_candidates(self):
@@ -171,3 +175,4 @@ class Trainer:
             results["distinct-2"] = get_distinct_2(predictions)
 
         return results
+
