@@ -1,12 +1,16 @@
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import yticks
 from matplotlib.ticker import StrMethodFormatter, NullFormatter
+import matplotlib.transforms as transforms
 import numpy as np
 import pickle
 import os
 
 if not os.path.isdir("Figures"):
     os.mkdir("Figures")
+
+red = "#b85450"
+blue = "#6c8ebf"
 
 
 def generator():
@@ -17,17 +21,32 @@ def generator():
     t = np.arange(len(data1))
 
     fig, ax = plt.subplots()
-    plt.plot(t, hybrid_losses, label="Hybrid")
-    plt.plot(t, baseline_losses, label="Base")
+    plt.plot(t, hybrid_losses, label="Hybrid", color=red)
+    plt.plot(t, baseline_losses, label="Baseline", color=blue)
 
-    ax.set(xlabel="Steps ('000)", ylabel="Validation loss (CE)", yscale="log")
+    ax.set(xlabel="Steps ('000)", ylabel="Validation Loss")
 
-    ax.yaxis.set_major_formatter(StrMethodFormatter('{x:.0f}'))
+    ax.yaxis.set_major_formatter(StrMethodFormatter('{x:.2f}'))
     ax.yaxis.set_minor_formatter(NullFormatter())
-    yticks([2, 4, 6, 8, 10])
-    ax.grid()
-    plt.legend()
+    axes = plt.gca()
+    axes.set_ylim([1, 6])
+    yticks(np.arange(1, 6, 2))
 
+    # Add horizontal line showing lowest point
+    val = min(hybrid_losses)
+    ax.axhline(y=val, color=red, linestyle="--")
+    trans = transforms.blended_transform_factory(
+    ax.get_yticklabels()[0].get_transform(), ax.transData)
+    ax.text(0,val, "{:.2f}".format(val), color=red, transform=trans,
+        ha="right", va="center")
+    val = min(baseline_losses)
+    ax.axhline(y=val, color=blue, linestyle="--")
+    trans = transforms.blended_transform_factory(
+        ax.get_yticklabels()[0].get_transform(), ax.transData)
+    ax.text(0, val, "{:.2f}".format(val), color=blue, transform=trans,
+            ha="right", va="center")
+
+    plt.legend()
     plt.savefig("Figures/generator_loss.png")
     plt.show()
 
@@ -37,11 +56,21 @@ def retrieval():
     retrieval_losses = [loss[1] for loss in data1]
     t = np.arange(len(data1))
     fig, ax = plt.subplots()
-    plt.plot(t, retrieval_losses, label="Retrieval")
+    plt.plot(t, retrieval_losses, label="Retrieval", color=red)
 
-    ax.set(xlabel="Steps ('000)", ylabel="Validation loss")
+    ax.set(xlabel="Steps ('000)", ylabel="Validation Loss")
 
-    ax.grid()
+    # Add horizontal line showing lowest point
+    val = min(retrieval_losses)
+    ax.axhline(y=val, color=red, linestyle="--")
+    trans = transforms.blended_transform_factory(
+        ax.get_yticklabels()[0].get_transform(), ax.transData)
+    ax.text(0, val, "{:.2f}".format(val), color=red, transform=trans,
+            ha="right", va="center")
+
+    axes = plt.gca()
+    axes.set_ylim([0.2, 0.3])
+    yticks(np.arange(0.2, 0.3, 0.05))
     plt.legend()
 
     plt.savefig("Figures/retrieval_loss.png")
@@ -53,18 +82,27 @@ def reranker():
     rerank_losses = [loss[2] for loss in data1]
     t = np.arange(len(data1))
     fig, ax = plt.subplots()
-    ax.set(xlabel="Steps ('000)", ylabel="Validation loss")
-    plt.plot(t, rerank_losses, label="Reranker")
+    ax.set(xlabel="Steps ('000)", ylabel="Validation Loss")
+    plt.plot(t, rerank_losses, label="Reranker", color=red)
+
+    # Add horizontal line showing lowest point
+    val = min(rerank_losses)
+    ax.axhline(y=val, color=red, linestyle="--")
+    trans = transforms.blended_transform_factory(
+        ax.get_yticklabels()[0].get_transform(), ax.transData)
+    ax.text(0, val, "{:.2f}".format(val), color=red, transform=trans,
+            ha="right", va="center")
 
     axes = plt.gca()
-    axes.set_ylim([1.3, 1.5])
-    yticks(np.arange(1.3, 1.5, 0.02))
+    axes.set_ylim([1.30, 1.50])
+    yticks(np.arange(1.30, 1.50, 0.10))
+    ax.yaxis.set_major_formatter(StrMethodFormatter('{x:.2f}'))
 
-    ax.grid()
     plt.legend()
 
     plt.savefig("Figures/reranker_loss.png")
     plt.show()
+
 
 generator()
 retrieval()
