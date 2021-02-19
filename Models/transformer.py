@@ -280,7 +280,6 @@ class Transformer(tf.keras.Model):
             for id_ in self.stopwords:
                 tmp_mask = tf.cast(tf.math.equal(targets, id_), tf.float64) * -self.stopword_l
                 mask = tf.add(mask, tmp_mask)
-        mask = tf.cast(mask, dtype=tf.int64)
         loss = crossentropy(targets, logits, sample_weight=mask)
 
         return loss
