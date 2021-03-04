@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib
 from matplotlib.pyplot import yticks
 from matplotlib.ticker import StrMethodFormatter, NullFormatter
 import matplotlib.transforms as transforms
@@ -11,6 +12,12 @@ if not os.path.isdir("Figures"):
 
 red = "#b85450"
 blue = "#6c8ebf"
+
+font = {'family' : 'DejaVu Serif',
+        'weight' : 'bold',
+        'size'   : 22}
+
+matplotlib.rc('font', **font)
 
 
 def generator():
@@ -46,7 +53,9 @@ def generator():
     ax.text(0, val, "{:.2f}".format(val), color=blue, transform=trans,
             ha="right", va="center")
 
-    plt.legend()
+    #plt.legend()
+    plt.title("Generation")
+    plt.tight_layout()
     plt.savefig("Figures/generator_loss.png")
     plt.show()
 
@@ -56,7 +65,7 @@ def retrieval():
     retrieval_losses = [loss[1] for loss in data1]
     t = np.arange(len(data1))
     fig, ax = plt.subplots()
-    plt.plot(t, retrieval_losses, label="Retrieval", color=red)
+    plt.plot(t, retrieval_losses, label="Hybrid", color=red)
 
     ax.set(xlabel="Steps ('000)", ylabel="Validation Loss")
 
@@ -71,7 +80,9 @@ def retrieval():
     axes = plt.gca()
     axes.set_ylim([0.2, 0.3])
     yticks(np.arange(0.2, 0.3, 0.05))
-    plt.legend()
+    #plt.legend()
+    plt.title("Retrieval")
+    plt.tight_layout()
 
     plt.savefig("Figures/retrieval_loss.png")
     plt.show()
@@ -83,7 +94,7 @@ def reranker():
     t = np.arange(len(data1))
     fig, ax = plt.subplots()
     ax.set(xlabel="Steps ('000)", ylabel="Validation Loss")
-    plt.plot(t, rerank_losses, label="Reranker", color=red)
+    plt.plot(t, rerank_losses, label="Hybrid", color=red)
 
     # Add horizontal line showing lowest point
     val = min(rerank_losses)
@@ -98,7 +109,9 @@ def reranker():
     yticks(np.arange(1.30, 1.50, 0.10))
     ax.yaxis.set_major_formatter(StrMethodFormatter('{x:.2f}'))
 
-    plt.legend()
+    #plt.legend()
+    plt.title("Reranking")
+    plt.tight_layout()
 
     plt.savefig("Figures/reranker_loss.png")
     plt.show()
