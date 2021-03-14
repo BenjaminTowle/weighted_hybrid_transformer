@@ -21,6 +21,9 @@ class Transformer(tf.keras.Model):
             pes.append(self.positional_embedding(i, self.config.model_size))
         pes = np.concatenate(pes, axis=0)
         pes = tf.constant(pes, dtype=tf.float32)
+        # Original implementation of Vaswani et al.'s [2017] Attention is All you Need Encoder-Decoder Transformer
+        # leveraging https://trungtran.io/2019/04/29/create-the-transformer-with-tensorflow-2-0/, onto which
+        # substantial modifications have been made accomodate the hybrid architecture.
         self.encoder = Encoder(self.config.vocab_size, self.config.model_size, self.config.num_layers, self.config.h,
                                self.config.tokenizer.vectors, pes=pes, multitask=self.config.multitask)
         self.decoder = Decoder(self.config.vocab_size, self.config.model_size, self.config.num_layers, self.config.h,
